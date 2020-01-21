@@ -1,5 +1,6 @@
 package ui;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -8,7 +9,10 @@ import business.SystemController;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -41,7 +45,9 @@ public class Start extends Application {
 	private static Stage[] allWindows = { 
 		LoginWindow.INSTANCE,
 		AllMembersWindow.INSTANCE,	
-		AllBooksWindow.INSTANCE
+		AllBooksWindow.INSTANCE,
+		AddNewLibraryMemberWindow.INSTANCE
+
 	};
 	
 	public static void hideAllWindows() {
@@ -133,8 +139,35 @@ public class Start extends Application {
 				AllMembersWindow.INSTANCE.setData(sb.toString());
 				AllMembersWindow.INSTANCE.show();
             }
-		});	
-		optionsMenu.getItems().addAll(login, bookIds, memberIds);
+		});
+		MenuItem addLibIds = new MenuItem("Library");
+
+		addLibIds.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				hideAllWindows();
+				try {
+					FXMLLoader fxmlLoader = new FXMLLoader();
+					fxmlLoader.setLocation(getClass().getResource("/ui/AddNewLibraryMemberWindow.fxml"));
+					Scene scene = new Scene(fxmlLoader.load(), 600, 600);
+
+					AddNewLibraryMemberWindow.INSTANCE.setTitle("Add New librarian");
+					AddNewLibraryMemberWindow.INSTANCE.setScene(scene);
+
+					AddNewLibraryMemberWindow.INSTANCE.setOnCloseRequest((w) -> {
+						hideAllWindows();
+						primaryStage.show();
+					});
+					AddNewLibraryMemberWindow.INSTANCE.show();
+
+				}
+				catch (IOException ea) {
+					ea.printStackTrace();
+				}
+
+			}
+		});
+		optionsMenu.getItems().addAll(login, bookIds, memberIds,addLibIds);
 
 		mainMenu.getMenus().addAll(optionsMenu);
 		Scene scene = new Scene(topContainer, 420, 375);
